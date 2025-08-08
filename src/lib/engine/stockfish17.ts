@@ -1,6 +1,6 @@
 import { EngineName } from "@/types/enums";
 import { UciEngine } from "./uciEngine";
-import { isMultiThreadSupported, isWasmSupported } from "./shared";
+import { isWasmSupported } from "./shared";
 
 export class Stockfish17 {
   public static async create(lite?: boolean): Promise<UciEngine> {
@@ -8,18 +8,19 @@ export class Stockfish17 {
       throw new Error("Stockfish 17 is not supported");
     }
 
-    const multiThreadIsSupported = isMultiThreadSupported();
-    if (!multiThreadIsSupported) console.log("Single thread mode");
-
-    const enginePath = `engines/stockfish-17/stockfish-17${
+    const enginePath = `https://cdn.statically.io/gh/GuillaumeSD/Chesskit/main/public/engines/stockfish-17/stockfish-17${
       lite ? "-lite" : ""
-    }${multiThreadIsSupported ? "" : "-single"}.js`;
+    }-single.js`;
 
     const engineName = lite
       ? EngineName.Stockfish17Lite
       : EngineName.Stockfish17;
 
-    return UciEngine.create(engineName, enginePath);
+    const res = await fetch(enginePath);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+
+    return UciEngine.create(engineName, url);
   }
 
   public static isSupported() {
