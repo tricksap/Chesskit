@@ -10,7 +10,7 @@ import { useAtomValue } from "jotai";
 import { useState } from "react";
 import { boardAtom, boardOrientationAtom, gameAtom } from "../states";
 import { getGameToSave } from "@/lib/chess";
-import { buildShareUrl, MAX_SHARE_URL_LENGTH } from "@/lib/shareGame";
+import { buildShareUrl } from "@/lib/shareGame";
 
 export default function ShareButton() {
   const game = useAtomValue(gameAtom);
@@ -27,15 +27,6 @@ export default function ShareButton() {
   const handleShare = () => {
     const gameToShare = getGameToSave(game, board);
     const url = buildShareUrl(gameToShare.pgn(), orientation);
-    console.log(url.length, "length");
-    if (url.length > MAX_SHARE_URL_LENGTH) {
-      setSnackbar({
-        open: true,
-        message: "Game too long to share via link. Use Copy PGN instead.",
-        severity: "warning",
-      });
-      return;
-    }
 
     navigator.clipboard?.writeText?.(url);
     setSnackbar({

@@ -3,8 +3,6 @@ import {
   decompressFromEncodedURIComponent,
 } from "lz-string";
 
-export const MAX_SHARE_URL_LENGTH = 4000;
-
 export const compressPgn = (pgn: string): string =>
   compressToEncodedURIComponent(pgn);
 
